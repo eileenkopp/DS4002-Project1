@@ -1,0 +1,128 @@
+import pandas as pd
+import re
+
+df = pd.read_csv("../DATA/unique_code_sections.csv")
+
+def normalize_code_section(raw):
+    if pd.isna(raw):
+        return None
+    s = str(raw).strip().upper()
+
+    # multi-section entries -> take the first non-empty part
+    # ("18.2-91/18.2-26" -> "18.2-91", but also guard against a leading
+    # delimiter like "/46.2-300" -> "46.2-300")
+    parts = [p.strip() for p in re.split(r"[/&]", s) if p.strip()]
+    s = parts[0] if parts else ""
+
+    # strip a leading subsection-letter prefix like "A.18.2-266" -> "18.2-266"
+    s = re.sub(r"^[A-Z]\.\s*", "", s)
+
+    # strip trailing parenthetical subsection refs like "18.2-456(A)(6)" -> "18.2-456"
+    s = re.sub(r"\(.*\)$", "", s).strip()
+
+    return s if s else None
+
+df["norm_section"] = df["CodeSection"].apply(normalize_code_section)
+
+
+def parse_section_num(num_str):
+    """
+    Parse a Virginia Code section number into a comparable tuple.)
+    """
+    parts = num_str.split(".")
+    main = int(parts[0])
+    sub = int(parts[1]) if len(parts) > 1 and parts[1] != "" else 0
+    return (main, sub)
+
+
+def in_range(num_tuple, lo_str, hi_str):
+    return parse_section_num(lo_str) <= num_tuple <= parse_section_num(hi_str)
+
+
+def rule_based_category(norm):
+    if not isinstance(norm, str) or not norm:
+        return None
+
+    # Title 19.2 = Criminal Procedure -- NOT an offense type.
+    # High-volume, must be its own bucket, not "other."
+    if norm.startswith("19.2-306"):
+        return "probation_violation"
+    if norm.startswith("19.2-128"):
+        return "failure_to_appear"
+    if norm.startswith("19.2"):
+        return "procedural_other"
+
+    # Title 53.1 = Corrections (escape, prisoner offenses)
+    if norm.startswith("53.1"):
+        return "corrections_related"
+
+    # Title 16.1 = Juvenile & Domestic Relations procedure
+    if norm.startswith("16.1"):
+        return "juvenile_family"
+
+    # Title 54.1 = drug-related professional/controlled substance provisions
+    if norm.startswith("54.1"):
+        return "drug"
+
+    # Title 46.2 = Motor Vehicle code
+    if norm.startswith("46.2"):
+        return "traffic"
+
+    # Title 40.1, Chapter 5 (Child Labor) -- 40.1-103 
+    if norm.startswith("40.1-103"):
+        return "child_abuse"
+
+    # Title 3.2, Chapter 65, Article 9 -- animal cruelty/fighting.
+    if norm.startswith("3.2-65"):
+        return "animal_cruelty"
+
+    # Title 18.2 = Crimes and Offenses Generally -- range-match on the numeric part
+    m = re.match(r"18\.2-(\d+(?:\.\d+)?)", norm)
+    if m:
+        n = parse_section_num(m.group(1))
+        if in_range(n, "30", "58"):
+            return "violent"
+        elif in_range(n, "61", "67.10"):
+            return "sexual_offense"
+        elif in_range(n, "89", "160.1"):
+            return "property"
+        elif in_range(n, "168", "231"):
+            return "fraud_financial"
+        elif in_range(n, "247", "265.5"):
+            return "drug"
+        elif in_range(n, "266", "272"):
+            return "dui_traffic_criminal"
+        elif in_range(n, "279", "311"):
+            return "weapons"
+        elif in_range(n, "355", "371"):
+            return "juvenile_family"
+        elif in_range(n, "372", "390.2"):
+            return "public_order"
+        elif in_range(n, "456", "487"):
+            return "obstruction_justice"
+
+    return None  # unmatched -> needs manual review
+
+df["category_auto"] = df["norm_section"].apply(rule_based_category)
+
+
+total_records = df["count"].sum()
+matched_records = df.loc[df["category_auto"].notna(), "count"].sum()
+
+print(f"Unique sections: {len(df):,}")
+print(f"Total records represented: {total_records:,}")
+print(f"Records matched by rules: {matched_records:,} ({100*matched_records/total_records:.1f}%)")
+print()
+print("Category breakdown (by record count):")
+print(
+    df.groupby("category_auto")["count"].sum()
+    .sort_values(ascending=False)
+    .to_string()
+)
+print()
+print("Top 25 unmatched sections by record count (prioritize these for manual labeling):")
+unmatched = df[df["category_auto"].isna()].sort_values("count", ascending=False)
+print(unmatched[["CodeSection", "norm_section", "count"]].head(25).to_string(index=False))
+
+df.to_csv("../DATA/labeled_code_sections.csv", index=False)
+print(f"\nSaved full table with norm_section + category_auto to labeled_code_sections.csv")
