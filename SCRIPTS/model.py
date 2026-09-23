@@ -1,3 +1,11 @@
+"""
+This file defines our tf-idf representation of the free text "charge" column, then uses that representation to perform a logistic regression which
+predicts the "category" of a crime based on its charge description.
+Our model uses a 70% train, 15% validation, %15 test split.
+During the validation phase, we use 5-fold cross validation to test C parameters [0.01, 0.1, 1, 10, 100] for the logistic regression to learn the best (most accurate and generalizable) C.
+The model then uses the learned parameter to run on the test data, and outputs accuracy metrics.
+"""
+
 import pandas as pd
 
 from sklearn.model_selection import train_test_split, GridSearchCV

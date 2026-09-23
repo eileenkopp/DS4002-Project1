@@ -1,11 +1,15 @@
-#Process would be to assign labels in a certain manner
-# 
-
-
-#use text charge to assign into one of our category via tdf-if, 
-#tdf-if assigns into our pre-decided category, 
-#using newly assigned category, assign actual training data label, 
-#then have model guess
+"""
+This file outlines our data cleaning process. We first access the data, and concatenate only the columns needed for our analysis.
+We drop rows which contain duplicated OTN numbers so that we aren't double counting any court cases
+We make sure to remove any human errors / inconsistencies in the "charge" free text column, including trailing whitespaces or extraneous characters.
+We then count all the unique CodeSections, and generate a csv file containing only the unique codes and their frequency counts, which gets used to label the data
+We then apply our labeling logic, and discard any rows in which there is no matching category for a crime code.
+After running this script, our data is now ready to be used by the model!
+Outputs of this file include: 
+    - unique_code_sections.csv
+    - labeled_code_sections.csv
+    - data_cleaned.csv
+"""
 
 import pandas as pd
 import glob

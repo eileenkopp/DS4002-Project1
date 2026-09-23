@@ -10,7 +10,7 @@ This dataset provides case-level information, including charges, case types, and
 
 The most recent update to the data, released **April 4, 2025**, noted incomplete Circuit Court data for the localities of **Alexandria and Fairfax** [1].
 
-We downloaded the CSV spreadsheets directly from the Virginia Court Data website and converted them to Google Sheets, which are stored in our shared Google Drive folder. There is **one spreadsheet for each year from 2020–2024**, and **three spreadsheets for 2025**, because the 2025 data had to be split into multiple files for easier use.
+We downloaded the CSV spreadsheets directly from the Virginia Court Data website and have included the raw files here in the court_case_data folder. There is **one spreadsheet for each year from 2020–2024**, and **three spreadsheets for 2025**, because the 2025 data had to be split into multiple files for easier use. However, in our use, all the csvs are concatenated since this investigation is not dependent on time.
 
 ### Provenance
 
@@ -49,6 +49,10 @@ The Circuit Court criminal files contain **53 columns**. The fields most relevan
 | `DispositionCode` | categorical | Final case outcome, such as *Guilty*, *Not Guilty/Acquitted*, or *Dismissed*. This is our modeling target. Approximately **20% of rows have no disposition recorded**, likely because the case was still open at the time of the scrape. |
 | `ConcludedBy` | categorical | Mechanism through which the case was concluded (e.g., *Guilty Plea*, *Trial*). |
 | `person_id` | hashed ID | Anonymized identifier that allows the same defendant to be linked across charges and cases without exposing their name. |
+
+### Explanatory Plots
+![Charge Class Type](charge_class_type.png)
+![Disposition Code](disposition_code_graphic.png)
 
 ### Reference
 
