@@ -8,7 +8,6 @@
 Add-on packages that need to be installed with the software:
 - scikit learn
 - pandas
-- matplotlib
 
 The platform we used: 
 - Mac
@@ -29,10 +28,10 @@ An outline illustrating the hierarchy of folders and subfolders contained in you
         - circuit_criminal_2025_anon_02.csv
     - labeled_code_sections.csv
     - unique_code_section.csv
+    - data_cleaned.csv
     - README.md
 - OUTPUT
 - SCRIPTS
-    - label_data.py
     - model.py
     - preprocess_data.py
 - LICENSE
@@ -47,9 +46,9 @@ An outline illustrating the hierarchy of folders and subfolders contained in you
     - if you don't have them already, download our software dependencies:
         - scikit learn
         - pandas
-        - matplotlib
     - run: python3 preprocess_data.py
         - this cleans the data and labels crime categores for training
 - Run the model:
     - run: python3 model.py
+        - this trains, validates, and tests the model, outputting the results to the terminal
 - Interpret your results from the terminal output.
