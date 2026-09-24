@@ -14,14 +14,15 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report
 
+# read in the cleaned data
+df = pd.read_csv("../DATA/data_cleaned.csv")
+df = df.dropna(subset=["Charge", "category_auto"])
 
-#df = pd.read_csv("../DATA/model_training_data.csv") #CHANGE THIS TO OUR ACTUAL PREPROCESSED DATA
-df = pd.read_csv("../DATA/mock_model_training_data.csv")#CHANGE THIS TO OUR ACTUAL PREPROCESSED DATA
-df = df.dropna(subset=["Charge", "Category"])
-
+# our input is the free text charge column, and predicted output is category_auto
 X = df["Charge"]
-y = df["Category"]
+y = df["category_auto"]
 
+# training / testing split: 70% train, 15% validation, 15% test
 X_train_val, X_test, y_train_val, y_test = train_test_split(
     X,
     y,
@@ -38,20 +39,24 @@ X_train, X_val, y_train, y_val = train_test_split(
     random_state=42
 )
 
+#first apply the tf-idf vectorizer to transform the free text into usable input for the logistic regression 
+#then apply the logistic regression
 model = Pipeline([
     ("tfidf", TfidfVectorizer(
         lowercase=True,
-        stop_words="english" #might have to change this later
+        stop_words="english"
     )),
     ("logreg", LogisticRegression(
         max_iter=1000
     ))
 ])
 
+#tries different values of C: the regulation parameter for the logistic regression
 param_grid = {
     "logreg__C": [0.01, 0.1, 1, 10, 100]
 }
 
+#perform 5-fold cross validation to choose the best C value (most accurate)
 grid_search = GridSearchCV(
     model,
     param_grid,
@@ -68,6 +73,7 @@ print(grid_search.best_params_)
 print("\nBest cross-validation accuracy:")
 print(grid_search.best_score_)
 
+#Test on your validation set first
 best_model = grid_search.best_estimator_
 y_val_pred = best_model.predict(X_val)
 

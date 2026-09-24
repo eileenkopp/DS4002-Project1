@@ -49,8 +49,7 @@ An outline illustrating the hierarchy of folders and subfolders contained in you
         - pandas
         - matplotlib
     - run: python3 preprocess_data.py
-- Run the data labeling script:
-    - run: python3 label_data.py
+        - this cleans the data and labels crime categores for training
 - Run the model:
     - run: python3 model.py
 - Interpret your results from the terminal output.
