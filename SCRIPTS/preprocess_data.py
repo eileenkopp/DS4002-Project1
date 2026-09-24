@@ -1,15 +1,11 @@
-"""
-This file outlines our data cleaning process. We first access the data, and concatenate only the columns needed for our analysis.
-We drop rows which contain duplicated OTN numbers so that we aren't double counting any court cases
-We make sure to remove any human errors / inconsistencies in the "charge" free text column, including trailing whitespaces or extraneous characters.
-We then count all the unique CodeSections, and generate a csv file containing only the unique codes and their frequency counts, which gets used to label the data
-We then apply our labeling logic, and discard any rows in which there is no matching category for a crime code.
-After running this script, our data is now ready to be used by the model!
-Outputs of this file include: 
-    - unique_code_sections.csv
-    - labeled_code_sections.csv
-    - data_cleaned.csv
-"""
+#Process would be to assign labels in a certain manner
+# 
+
+
+#use text charge to assign into one of our category via tdf-if, 
+#tdf-if assigns into our pre-decided category, 
+#using newly assigned category, assign actual training data label, 
+#then have model guess
 
 import pandas as pd
 import glob
@@ -19,41 +15,73 @@ import matplotlib.pyplot as plt
 input_folder = "../DATA/court_case_data"
 files = glob.glob(os.path.join(input_folder, "*.csv"))
 
+columns_to_keep = [
+    "HearingDate", "HearingResult", "HearingType",
+    "fips", "Filed", "Commencedby",
+    "Sex", "Race", "Address",
+    "Charge", "CodeSection", "ChargeType", "Class",
+    "OffenseDate", "ArrestDate",
+    "DispositionDate", "ConcludedBy",
+    "SentenceTime", "SentenceSuspended", "FineAmount", "Costs",
+    "OTN", "person_id",
+]
+
 dfs = []
 
 for file in files:
     temp = pd.read_csv(
         file,
-        usecols=["fips", "DispositionCode", "OTN", "ChargeType", "Class", "CodeSection", "Charge", "DispositionDate"],
+        usecols=columns_to_keep,
         low_memory=False
     )
-
-    temp = temp.dropna(subset=["DispositionCode"])
     dfs.append(temp)
 
-# Combine all 7 files
+# Combine all files
 df = pd.concat(dfs, ignore_index=True)
 
-# Remove duplicate OTN records
+# Remove duplicate OTN records (OTN is the unique case identifier)
 before = len(df)
 df = df.drop_duplicates(subset="OTN")
 
 print(f"Records before removing duplicates: {before:,}")
 print(f"Records after removing duplicates: {len(df):,}")
 
-section_counts = (
-    df["CodeSection"]
-    .value_counts()
-    .reset_index()
-)
-section_counts.columns = ["CodeSection", "count"]
-section_counts["coverage_pct"] = 100 * section_counts["count"].cumsum() / section_counts["count"].sum()
+# --- Additional cleaning steps ---
 
-print(f"Unique code sections: {len(section_counts)}")
-print(section_counts.head(20))
+# Strip stray whitespace from all text columns
+str_cols = df.select_dtypes(include="object").columns
+for col in str_cols:
+    df[col] = df[col].str.strip()
 
-# How many sections cover 90% of the data?
-n_for_90 = (section_counts["coverage_pct"] <= 90).sum()
-print(f"Top {n_for_90} sections cover 90% of records")
+# Standardize casing on the categorical fields so e.g. "felony" and "Felony"
+# aren't treated as different categories downstream
+for col in ["ChargeType", "Class"]:
+    df[col] = df[col].astype(str).str.upper()
 
-section_counts.to_csv("../DATA/unique_code_sections.csv", index=False)
+# Drop rows missing an identifier we need for joining/matching later
+before_missing = len(df)
+df = df.dropna(subset=["OTN", "fips"])
+removed_missing = before_missing - len(df)
+print(f"Records after dropping missing OTN/fips: {len(df):,} (removed {removed_missing:,})")
+
+# Drop rows where a cleaned field ended up as an empty string
+df = df[(df["ChargeType"] != "") & (df["Class"] != "")]
+
+# fips is unpadded in the source (e.g. 99), pad to standard 3-digit code
+df["fips"] = df["fips"].astype(str).str.replace(r"\.0$", "", regex=True).str.zfill(3)
+
+# Quick sanity check on category spread before moving to the labeling step
+print("\nUnique ChargeType values:", df["ChargeType"].nunique())
+print("Unique Class values:", df["Class"].nunique())
+
+# Missingness report -- shows % blank per column so you can decide, per column,
+# whether a blank is "bad data" (drop/fill) or structurally meaningful
+# (e.g. no SentenceTime because the case was Nolle Prosequi'd)
+missing_pct = (df.isna().mean() * 100).round(2).sort_values(ascending=False)
+print("\nPercent missing by column:")
+print(missing_pct.to_string())
+
+# Save the cleaned dataset for the next step in the pipeline
+output_path = os.path.join(input_folder, "cleaned_court_case_data.csv")
+df.to_csv(output_path, index=False)
+print(f"\nCleaned data saved to: {output_path}")
