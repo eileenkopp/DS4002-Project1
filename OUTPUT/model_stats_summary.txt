@@ -1,0 +1,68 @@
+
+--------------------------------------------
+Model Results Report
+--------------------------------------------
+
+1. Validation Set Performance
+----------------------------------------------------------------------
+
+Validation Accuracy: 0.9738
+
+Validation Classification Report:
+                      precision    recall  f1-score   support
+
+      animal_cruelty       0.99      0.99      0.99       591
+         child_abuse       0.97      0.98      0.97       302
+ corrections_related       0.96      0.98      0.97       463
+                drug       0.98      0.99      0.98     19654
+dui_traffic_criminal       0.98      0.99      0.98      3078
+   failure_to_appear       0.87      0.83      0.85      2398
+     fraud_financial       0.96      0.99      0.97      5836
+     juvenile_family       0.98      0.98      0.98      2091
+ obstruction_justice       0.93      0.94      0.93      7711
+ probation_violation       0.98      0.96      0.97     43237
+    procedural_other       0.95      0.93      0.94      3204
+            property       0.96      0.99      0.97     11605
+        public_order       0.99      1.00      1.00      3277
+      sexual_offense       0.99      0.99      0.99      2236
+             traffic       0.99      0.99      0.99      9471
+             violent       0.98      1.00      0.99     10762
+             weapons       0.99      0.99      0.99      6141
+
+            accuracy                           0.97    132057
+           macro avg       0.97      0.97      0.97    132057
+        weighted avg       0.97      0.97      0.97    132057
+
+
+
+2. Held Out Test Set Performance
+----------------------------------------------------------------------
+Test Accuracy: 0.9737  (Project Target Threshold: >= 0.8000)
+
+THRESHOLD VERDICT: PASSED
+
+Test Classification Report:
+                      precision    recall  f1-score   support
+
+      animal_cruelty       0.99      1.00      0.99       590
+         child_abuse       0.96      0.99      0.97       302
+ corrections_related       0.96      0.97      0.97       463
+                drug       0.98      0.99      0.98     19650
+dui_traffic_criminal       0.98      0.98      0.98      3078
+   failure_to_appear       0.87      0.83      0.85      2398
+     fraud_financial       0.96      0.99      0.98      5835
+     juvenile_family       0.98      0.99      0.98      2091
+ obstruction_justice       0.93      0.94      0.93      7710
+ probation_violation       0.98      0.96      0.97     43229
+    procedural_other       0.95      0.93      0.94      3203
+            property       0.96      0.99      0.97     11603
+        public_order       1.00      1.00      1.00      3277
+      sexual_offense       0.99      1.00      0.99      2235
+             traffic       0.99      0.99      0.99      9470
+             violent       0.98      1.00      0.99     10761
+             weapons       0.99      0.99      0.99      6140
+
+            accuracy                           0.97    132035
+           macro avg       0.97      0.97      0.97    132035
+        weighted avg       0.97      0.97      0.97    132035
+

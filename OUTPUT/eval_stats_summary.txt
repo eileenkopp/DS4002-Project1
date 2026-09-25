@@ -1,0 +1,50 @@
+
+--------------------------------------------
+Statistical Analysis Report
+--------------------------------------------
+
+1. Chi-squared Results
+- Chi-square statistic: 972.7634
+- Degrees of freedom: 16
+- p-value: 0.0000 (p < 0.05)
+
+Results: Statistically Significant (The overall distributions differ)
+
+--------------------------------------------
+
+2. Cramers Test for determining effect size
+- Cramér's V: 0.0332
+- Predefined Threshold: > 0.1
+
+Results: Practically Negligible Effect due to not meeting the predefined threshold
+         The large sample size (> 800k) pretty much guarantees a significant p-value
+         due to the fact that small differences will be magnified, the cramer test 
+         shows that Charlottesville's legal charge mix does not differ greatly to
+         the rest of Virginia.
+
+--------------------------------------------
+
+3. Sorted Charlottesville Residuals
+- Positive values indicate over-represenation; Negative values indicate under-representation
+
+                      charlottesville
+predicted_category                   
+procedural_other                18.62
+violent                         13.47
+probation_violation              6.43
+failure_to_appear                5.99
+child_abuse                      3.45
+weapons                          1.16
+sexual_offense                  -0.14
+public_order                    -0.86
+dui_traffic_criminal            -2.06
+property                        -2.98
+obstruction_justice             -3.01
+corrections_related             -3.25
+juvenile_family                 -3.27
+animal_cruelty                  -3.66
+fraud_financial                 -4.82
+traffic                         -6.74
+drug                           -14.98
+
+--------------------------------------------

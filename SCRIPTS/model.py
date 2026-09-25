@@ -14,6 +14,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report
 
+import joblib
+
 # read in the cleaned data
 df = pd.read_csv("../DATA/data_cleaned.csv")
 df = df.dropna(subset=["Charge", "category_auto"])
@@ -77,17 +79,48 @@ print(grid_search.best_score_)
 best_model = grid_search.best_estimator_
 y_val_pred = best_model.predict(X_val)
 
-print("\nValidation accuracy:")
-print(accuracy_score(y_val, y_val_pred))
 
-print("\nValidation classification report:")
-print(classification_report(y_val, y_val_pred))
+val_acc = accuracy_score(y_val, y_val_pred)
+val_rep = classification_report(y_val, y_val_pred)
 
 #Actually apply the model to the test data
 y_test_pred = best_model.predict(X_test)
+test_acc = accuracy_score(y_test, y_test_pred)
 
-print("\nTest accuracy:")
-print(accuracy_score(y_test, y_test_pred))
+test_rep = classification_report(y_test, y_test_pred)
+joblib.dump(best_model, 'best_model.joblib')
 
-print("\nTest classification report:")
-print(classification_report(y_test, y_test_pred))
+
+
+
+
+#print results to output folder
+from pathlib import Path
+
+output_dir = Path("../OUTPUT")
+output_file = output_dir / "model_stats_summary.txt"
+
+content = f"""
+--------------------------------------------
+Model Results Report
+--------------------------------------------
+
+1. Validation Set Performance
+----------------------------------------------------------------------
+
+Validation Accuracy: {val_acc:.4f}
+
+Validation Classification Report:
+{val_rep}
+
+
+2. Held Out Test Set Performance
+----------------------------------------------------------------------
+Test Accuracy: {test_acc:.4f}  (Project Target Threshold: >= 0.8000)
+
+THRESHOLD VERDICT: {"PASSED" if test_acc >= 0.80 else "FAILED"}
+
+Test Classification Report:
+{test_rep}
+"""
+output_file.write_text(content, encoding="utf-8")
