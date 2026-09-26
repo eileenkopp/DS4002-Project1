@@ -8,6 +8,8 @@
 Add-on packages that need to be installed with the software:
 - scikit learn
 - pandas
+- numpy
+- joblib
 
 The platform we used: 
 - Mac
@@ -29,11 +31,19 @@ An outline illustrating the hierarchy of folders and subfolders contained in you
     - labeled_code_sections.csv
     - unique_code_section.csv
     - data_cleaned.csv
+        - **this file was too big to upload to github. To access, use this link to view the file in google drive: https://drive.google.com/file/d/18tYYAcxT0N9HHhBcbOf5kmi2x2k4Et-D/view?usp=drive_link**
     - README.md
 - OUTPUT
+    - category_distribution_percentage.png
+    - confusion_matrix_normalized.png
+    - contingency_table_full.csv
+    - consingency_table_visual.png
+    - eval_stats_summary.txt
+    - model_stats_summary.txt
 - SCRIPTS
     - model.py
     - preprocess_data.py
+    - evaluate_model.py
 - LICENSE
 - README.md
 
@@ -43,12 +53,12 @@ An outline illustrating the hierarchy of folders and subfolders contained in you
 - Run the preprocessing script:
     - in your IDE (ex: vscode), open up the project and your terminal
     - make sure you have python3 downloaded on your computer
-    - if you don't have them already, download our software dependencies:
-        - scikit learn
-        - pandas
+    - if you don't have them already, download our software dependencies (listed above)
     - run: python3 preprocess_data.py
         - this cleans the data and labels crime categores for training
 - Run the model:
     - run: python3 model.py
         - this trains, validates, and tests the model, outputting the results to the terminal
-- Interpret your results from the terminal output.
+- Run the significance / evaluation script:
+    - run: python3 evaluate_model.py
+- Interpret your results from the figures produced in the output folder.
