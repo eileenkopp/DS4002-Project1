@@ -52,7 +52,12 @@ The Circuit Court criminal files contain **53 columns**. The fields most relevan
 
 ### Explanatory Plots
 ![Charge Class Type](charge_class_type.png)
+
+Explanatory Plot 1: Comparison of charge type counts — Charlottesville vs. Rest of Virginia.
+
 ![Disposition Code](disposition_code_graphic.png)
+
+Explanatory Plot 2: Comparison of disposition code counts - Charlottesville vs. Rest of Virginia
 
 ### Reference
 
