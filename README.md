@@ -5,7 +5,7 @@
  
 - We used Python for this project, specifically Python 3.14.7
 
-Add-on packages that need to be installed with the software:
+Add-on packages that need to be installed with the software (can check requirements.txt in SCRIPTS to see exact versions):
 - scikit learn
 - pandas
 - numpy
@@ -13,6 +13,12 @@ Add-on packages that need to be installed with the software:
 
 The platform we used: 
 - Mac
+
+Scripts Execution Order (or could run the run_scripts.py file to do this automatically):
+- preprocess_data.py
+- model.py
+- evaluate_model
+
 
 ### Section 2: Documentation Map. 
 
@@ -25,9 +31,9 @@ An outline illustrating the hierarchy of folders and subfolders contained in you
         - circuit_criminal_2022_anon_00.csv
         - circuit_criminal_2023_anon_00.csv
         - circuit_criminal_2024_anon_00.csv
+        - circuit_criminal_2025_002.csv
         - circuit_criminal_2025_anon_00.csv
         - circuit_criminal_2025_anon_01.csv
-        - circuit_criminal_2025_anon_02.csv
     - labeled_code_sections.csv
     - unique_code_section.csv
     - data_cleaned.csv
@@ -41,9 +47,12 @@ An outline illustrating the hierarchy of folders and subfolders contained in you
     - eval_stats_summary.txt
     - model_stats_summary.txt
 - SCRIPTS
+    - best_model.joblib
+    - evaluate_model.py
     - model.py
     - preprocess_data.py
-    - evaluate_model.py
+    - requirements.txt
+    - run_scripts.py
 - LICENSE
 - README.md
 
@@ -56,9 +65,11 @@ An outline illustrating the hierarchy of folders and subfolders contained in you
     - if you don't have them already, download our software dependencies (listed above)
     - run: python3 preprocess_data.py
         - this cleans the data and labels crime categores for training
+        - When cleaning the data it removes duplicates and normalizes the charge text before it can be used by the model
 - Run the model:
     - run: python3 model.py
         - this trains, validates, and tests the model, outputting the results to the terminal
 - Run the significance / evaluation script:
     - run: python3 evaluate_model.py
+    - this creates the confusion matrix, contingency table, and runs statistical analysis (cramer's-v and chi-squared) and saves results to output folder
 - Interpret your results from the figures produced in the output folder.
