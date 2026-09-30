@@ -14,11 +14,6 @@ Add-on packages that need to be installed with the software (can check requireme
 The platform we used: 
 - Mac
 
-Scripts Execution Order (or could run the run_scripts.py file to do this automatically):
-- preprocess_data.py
-- model.py
-- evaluate_model
-
 
 ### Section 2: Documentation Map. 
 
@@ -59,6 +54,10 @@ An outline illustrating the hierarchy of folders and subfolders contained in you
 ### Section 3: Instructions for reproducing your results.  
 - Clone the repo:
     - clone this repo to your local and open it up in your IDE
+ 
+- 2 options for how to reproduce the results:
+- 1. Change Directory into the SCRIPTS directory, then run the run_scripts.py file to automatically to do the steps in the second option
+  2. Manually do the following steps below in-a-row starting from pre_processing script, then running the model, finishing with running the evaluation script
 - Run the preprocessing script:
     - in your IDE (ex: vscode), open up the project and your terminal
     - make sure you have python3 downloaded on your computer
