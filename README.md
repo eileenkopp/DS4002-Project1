@@ -73,3 +73,10 @@ An outline illustrating the hierarchy of folders and subfolders contained in you
     - run: python3 evaluate_model.py
     - this creates the confusion matrix, contingency table, and runs statistical analysis (cramer's-v and chi-squared) and saves results to output folder
 - Interpret your results from the figures produced in the output folder.
+
+### References
+1. Virginia Court Data, “Court case information from Virginia’s Circuit and General District courts,” virginiacourtdata.org. [Online]. Available: https://virginiacourtdata.org/  - Where we got the dataset (2020 - 2025)
+2. "Code of Virginia," Virginia Law, 2026. [Online]. Available: https://law.lis.virginia.gov/vacode/ . (Accessed: Sep. 23, 2026). – what we used to create category labels
+
+
+
